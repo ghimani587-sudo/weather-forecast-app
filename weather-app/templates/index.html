@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Skies — Weather Forecast</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+
+  <div class="bg-orbs">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+
+  <main class="container">
+
+    <!-- Header -->
+    <header class="header">
+      <div class="logo">
+        <span class="logo-icon">◈</span>
+        <span class="logo-text">Skies</span>
+      </div>
+      <p class="tagline">Real-time weather, beautifully simple</p>
+    </header>
+
+    <!-- Search Form -->
+    <section class="search-section">
+      <form method="POST" action="/" class="search-form">
+        <div class="input-wrap">
+          <span class="input-icon">⌕</span>
+          <input
+            type="text"
+            name="city"
+            placeholder="Enter any city in the world…"
+            autocomplete="off"
+            autofocus
+            value="{{ request.form.get('city', '') }}"
+          />
+        </div>
+        <button type="submit" class="btn-search">
+          <span>Get Weather</span>
+          <span class="btn-arrow">→</span>
+        </button>
+      </form>
+    </section>
+
+    <!-- Error State -->
+    {% if error %}
+    <section class="error-card" role="alert">
+      <span class="error-icon">⚠</span>
+      <p>{{ error }}</p>
+    </section>
+    {% endif %}
+
+    <!-- Weather Result -->
+    {% if weather %}
+    <section class="weather-card" data-condition="{{ weather.condition_main }}">
+
+      <div class="weather-top">
+        <div class="weather-location">
+          <h2>{{ weather.city }}</h2>
+          <span class="country-badge">{{ weather.country }}</span>
+        </div>
+        <div class="weather-icon-big">{{ weather.icon }}</div>
+      </div>
+
+      <div class="weather-temp-block">
+        <span class="temp-main">{{ weather.temperature }}<sup>°C</sup></span>
+        <span class="feels-like">Feels like {{ weather.feels_like }}°C</span>
+      </div>
+
+      <div class="weather-condition">
+        <span class="condition-pill">{{ weather.condition }}</span>
+      </div>
+
+      <div class="weather-stats">
+        <div class="stat">
+          <span class="stat-icon">💧</span>
+          <span class="stat-label">Humidity</span>
+          <span class="stat-value">{{ weather.humidity }}%</span>
+        </div>
+        <div class="stat">
+          <span class="stat-icon">💨</span>
+          <span class="stat-label">Wind</span>
+          <span class="stat-value">{{ weather.wind_speed }} km/h</span>
+        </div>
+        <div class="stat">
+          <span class="stat-icon">👁</span>
+          <span class="stat-label">Visibility</span>
+          <span class="stat-value">{{ weather.visibility }} km</span>
+        </div>
+      </div>
+
+    </section>
+    {% endif %}
+
+    <!-- Empty / Hero State -->
+    {% if not weather and not error %}
+    <section class="hero-state">
+      <div class="hero-glyphs">
+        <span>☀️</span><span>🌧️</span><span>❄️</span><span>⛈️</span><span>🌫️</span>
+      </div>
+      <p>Search any city above to see live weather conditions, humidity, and wind data.</p>
+      <p class="hero-hint">Powered by <strong>OpenWeatherMap</strong></p>
+    </section>
+    {% endif %}
+
+    <!-- API hint -->
+    <footer class="footer">
+      <p>JSON API available at <code>/api/weather?city=London</code></p>
+    </footer>
+
+  </main>
+
+</body>
+</html>
+<script>
+async function getWeather() {
+    let city = document.getElementById("city").value;
+
+    let response = await fetch(`http://127.0.0.1:10000/weather?city=${city}`);
+    let data = await response.json();
+
+    console.log(data);
+}
+</script>
