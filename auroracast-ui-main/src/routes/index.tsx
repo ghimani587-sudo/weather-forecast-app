@@ -19,6 +19,12 @@ import {
   Eye,
   Umbrella,
   ArrowLeft,
+  Leaf,
+  Sparkles,
+  Shirt,
+  Map,
+  Activity,
+  HeartPulse,
 } from "lucide-react";
 import { fetchWeatherData, type WeatherData } from "../lib/api/weather";
 
@@ -188,6 +194,39 @@ function WeatherPage() {
           animationDelay: "8s",
         }}
       />
+
+      {/* Weather Particle Effects */}
+      {view === "dashboard" && data && [61, 63, 65, 80, 81, 82].includes(data.code) && (
+        <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
+          {Array.from({ length: 30 }).map((_, i) => (
+            <div
+              key={i}
+              className="absolute w-[2px] h-8 bg-blue-500/40 animate-rain"
+              style={{
+                left: `${Math.random() * 100}%`,
+                animationDelay: `${Math.random() * 2}s`,
+                animationDuration: `${0.6 + Math.random() * 0.4}s`
+              }}
+            />
+          ))}
+        </div>
+      )}
+
+      {view === "dashboard" && data && [71, 73, 75, 77, 85, 86].includes(data.code) && (
+        <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
+          {Array.from({ length: 40 }).map((_, i) => (
+            <div
+              key={i}
+              className="absolute w-2 h-2 rounded-full bg-white/70 animate-snow"
+              style={{
+                left: `${Math.random() * 100}%`,
+                animationDelay: `${Math.random() * 3}s`,
+                animationDuration: `${3 + Math.random() * 2}s`
+              }}
+            />
+          ))}
+        </div>
+      )}
 
       {/* Floating background weather icons (landing) */}
       {view === "landing" && (
@@ -418,9 +457,61 @@ function WeatherPage() {
             </div>
           </section>
 
+          {/* AI Insights & Recommendations */}
+          <section className="mt-8 animate-fade-up">
+            <div className="rounded-3xl glass-card p-6 relative overflow-hidden group animate-pulse-glow">
+              <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/10 via-purple-500/10 to-pink-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+              <div className="relative z-10">
+                <div className="flex items-center gap-3">
+                  <div className="rounded-full bg-indigo-100 p-2 text-indigo-600 dark:bg-indigo-900/50 dark:text-indigo-400">
+                    <Sparkles className="h-5 w-5" />
+                  </div>
+                  <h4 className="text-xl font-bold tracking-tight bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent dark:from-indigo-400 dark:to-purple-400">AI Weather Summary</h4>
+                </div>
+                <p className="mt-4 text-base sm:text-lg leading-relaxed text-foreground/80 font-medium">
+                  {data.aiSummary}
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <section className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 animate-fade-up">
+            {[
+              { icon: Leaf, label: "Air Quality", value: `${data.aqi} AQI`, sub: data.aqi < 50 ? "Good" : data.aqi < 100 ? "Moderate" : "Poor", color: "text-emerald-500", bg: "bg-emerald-100 dark:bg-emerald-900/30" },
+              { icon: Map, label: "Travel Score", value: `${data.travelScore}/100`, sub: data.travelScore > 80 ? "Excellent" : data.travelScore > 50 ? "Fair" : "Poor", color: "text-blue-500", bg: "bg-blue-100 dark:bg-blue-900/30" },
+              { icon: Shirt, label: "Outfit", value: data.outfit, sub: "Recommendation", color: "text-pink-500", bg: "bg-pink-100 dark:bg-pink-900/30" },
+              { icon: Activity, label: "Activity", value: data.activity, sub: "Suggestion", color: "text-orange-500", bg: "bg-orange-100 dark:bg-orange-900/30" },
+            ].map(({ icon: Icon, label, value, sub, color, bg }, i) => (
+              <div key={label} className="rounded-3xl glass-card p-5 transition-all hover:-translate-y-1 hover:shadow-xl animate-fade-up flex flex-col justify-between" style={{ animationDelay: `${i * 100}ms` }}>
+                <div className="flex items-center gap-3">
+                  <div className={`rounded-xl p-2 ${bg} ${color}`}>
+                    <Icon className="h-5 w-5" />
+                  </div>
+                  <div className="text-sm font-semibold opacity-80">{label}</div>
+                </div>
+                <div className="mt-4">
+                  <p className="text-sm font-bold leading-tight">{value}</p>
+                  <p className="text-xs text-muted-foreground mt-1 font-medium">{sub}</p>
+                </div>
+              </div>
+            ))}
+          </section>
+          
+          <section className="mt-4 animate-fade-up">
+            <div className="rounded-3xl glass-card p-6 border-l-4 border-l-rose-500 flex items-start gap-4 transition-all hover:shadow-lg">
+               <div className="rounded-full bg-rose-100 p-2 text-rose-600 dark:bg-rose-900/30 dark:text-rose-400">
+                  <HeartPulse className="h-6 w-6" />
+               </div>
+               <div>
+                 <h4 className="text-base font-bold tracking-tight text-rose-600 dark:text-rose-400">Health Advisory</h4>
+                 <p className="mt-1 text-sm font-medium text-foreground/80">{data.healthAdvisory}</p>
+               </div>
+            </div>
+          </section>
+
           {/* 5-day forecast */}
           {data.daily.length > 0 && (
-            <section className="mt-6 animate-fade-up">
+            <section className="mt-8 animate-fade-up">
               <div className="rounded-3xl glass-card p-6 sm:p-8">
                 <h4 className="text-sm font-medium opacity-80">5-Day Forecast</h4>
                 <div className="mt-5 -mx-2 flex gap-3 overflow-x-auto px-2 pb-2 sm:grid sm:grid-cols-5 sm:gap-3 sm:overflow-visible">

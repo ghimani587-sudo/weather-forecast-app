@@ -162,3 +162,27 @@
   to { transform: rotate(360deg); }
 }
 .animate-spin-slow { animation: spin-slow 8s linear infinite; }
+
+/* New Weather Effects */
+@keyframes rain-fall {
+  0% { transform: translateY(-100px); opacity: 0; }
+  20% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { transform: translateY(100vh); opacity: 0; }
+}
+.animate-rain { animation: rain-fall linear infinite; }
+
+@keyframes snow-fall {
+  0% { transform: translateY(-100px) translateX(0); opacity: 0; }
+  20% { opacity: 1; }
+  50% { transform: translateY(50vh) translateX(20px); }
+  80% { opacity: 1; }
+  100% { transform: translateY(100vh) translateX(-20px); opacity: 0; }
+}
+.animate-snow { animation: snow-fall linear infinite; }
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 15px rgba(99, 102, 241, 0.4); }
+  50% { box-shadow: 0 0 30px rgba(99, 102, 241, 0.8); }
+}
+.animate-pulse-glow { animation: pulse-glow 3s ease-in-out infinite; }

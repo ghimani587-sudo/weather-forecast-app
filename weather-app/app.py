@@ -35,6 +35,7 @@ logger = logging.getLogger(__name__)
 # Using Open-Meteo API (free, no API key required)
 GEO_API_URL = "https://geocoding-api.open-meteo.com/v1/search"
 WEATHER_API_URL = "https://api.open-meteo.com/v1/forecast"
+AQI_API_URL = "https://air-quality-api.open-meteo.com/v1/air-quality"
 
 
 # ── Helper ─────────────────────────────────────────────────────────────────────
@@ -95,6 +96,24 @@ def fetch_weather_forecast(city: str) -> dict:
     longitude = result["longitude"]
     name = result.get("name", city)
     country = result.get("country", "")
+
+    # Step 1.5: Fetch AQI data
+    try:
+        aqi_resp = requests.get(
+            AQI_API_URL,
+            params={
+                "latitude": latitude,
+                "longitude": longitude,
+                "current": "european_aqi",
+                "timezone": "auto"
+            },
+            timeout=5
+        )
+        aqi_data = aqi_resp.json() if aqi_resp.ok else {}
+        current_aqi = aqi_data.get("current", {}).get("european_aqi", None)
+    except Exception as e:
+        logger.warning(f"Failed to fetch AQI: {e}")
+        current_aqi = None
 
     # Step 2: Fetch weather forecast
     try:
@@ -170,12 +189,69 @@ def fetch_weather_forecast(city: str) -> dict:
             "precipitation": daily_precip[i] if i < len(daily_precip) else 0,
         })
 
+    current_temp_val = round(current_temp)
+    feels_like_val = round(current_apparent)
+    condition_desc = get_weather_description(current_code)
+    
+    # Calculate Insights
+    aqi_val = current_aqi if current_aqi is not None else 50 # fallback
+    
+    # AI Summary
+    ai_summary = f"Currently, it's {current_temp_val}°C with {condition_desc.lower().split(' ')[0]} skies in {name}. "
+    if aqi_val > 100:
+        ai_summary += "Air quality is poor today, so take care if you're outdoors. "
+    else:
+        ai_summary += "It's a great day to be outside! "
+    
+    if current_code in [61, 63, 65, 80, 81, 82]:
+        ai_summary += "Expect some rain throughout the day."
+    elif current_code in [71, 73, 75, 85, 86]:
+        ai_summary += "Snow is expected, so bundle up!"
+        
+    # Outfit
+    if current_temp_val < 5:
+        outfit = "Heavy coat, gloves, and a warm scarf."
+    elif current_temp_val < 15:
+        outfit = "Light jacket or sweater."
+    elif current_temp_val < 25:
+        outfit = "T-shirt and jeans or shorts."
+    else:
+        outfit = "Light, breathable summer clothes."
+        
+    if current_code in [61, 63, 65, 80, 81, 82]:
+        outfit += " Don't forget an umbrella or raincoat!"
+        
+    # Travel Score (0-100)
+    travel_score = 100
+    if current_code in [95, 96, 99]: travel_score -= 50
+    elif current_code in [61, 63, 65, 80, 81, 82, 71, 73, 75, 85, 86]: travel_score -= 30
+    if current_temp_val < 0 or current_temp_val > 35: travel_score -= 20
+    if current_wind > 30: travel_score -= 10
+    travel_score = max(0, min(100, travel_score))
+    
+    # Activity
+    if travel_score > 80:
+        activity = "Perfect weather for hiking, cycling, or a picnic."
+    elif travel_score > 50:
+        activity = "Good for a walk, but keep an eye on the weather."
+    else:
+        activity = "Great day for indoor activities like reading, museums, or movies."
+        
+    # Health Advisory
+    health_advisory = "No major health concerns."
+    if aqi_val >= 100:
+        health_advisory = "Poor air quality. Consider wearing a mask and avoid strenuous outdoor activities."
+    elif current_temp_val > 35:
+        health_advisory = "Extreme heat. Stay hydrated and avoid direct sun during peak hours."
+    elif current_temp_val < -5:
+        health_advisory = "Freezing temperatures. Risk of frostbite, dress warmly."
+
     return {
         "city": name,
         "country": country,
-        "temperature": round(current_temp),
-        "feelsLike": round(current_apparent),
-        "condition": get_weather_description(current_code),
+        "temperature": current_temp_val,
+        "feelsLike": feels_like_val,
+        "condition": condition_desc,
         "code": current_code,
         "humidity": round(current_humidity),
         "windSpeed": round(current_wind),
@@ -185,6 +261,12 @@ def fetch_weather_forecast(city: str) -> dict:
         "sunset": daily_sunset[0] if daily_sunset else "",
         "hourly": hourly_forecast,
         "daily": daily_forecast,
+        "aqi": round(aqi_val),
+        "aiSummary": ai_summary,
+        "outfit": outfit,
+        "travelScore": travel_score,
+        "activity": activity,
+        "healthAdvisory": health_advisory,
     }
 
 

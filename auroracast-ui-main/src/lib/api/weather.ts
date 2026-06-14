@@ -26,6 +26,12 @@ export interface WeatherData {
     code: number;
     precipitation: number;
   }[];
+  aqi: number;
+  aiSummary: string;
+  outfit: string;
+  travelScore: number;
+  activity: string;
+  healthAdvisory: string;
 }
 
 export async function fetchWeatherData(city: string): Promise<WeatherData> {
