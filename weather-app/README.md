@@ -1,93 +1,164 @@
-# Skies — Weather Forecast App
+# AI-Powered Weather Forecast App 🌦️
 
-A production-ready Flask weather app powered by OpenWeatherMap.
+A Python-based Weather Forecast Application developed during my internship at **Pinnacle Labs**.
 
-## Quick Start (Local)
+This application provides real-time weather information along with intelligent weather-based insights to help users make better daily decisions.
+
+---
+
+## Features
+
+- Real-time Weather Updates
+- 5-Day Weather Forecast
+- Air Quality Index (AQI) Monitoring
+- AI Weather Summary
+- Travel Comfort Score
+- Smart Outfit Recommendations
+- Activity Suggestions
+- Health Advisory Alerts
+- Dynamic Weather Insights
+- Responsive User Interface
+
+---
+
+## Tech Stack
+
+### Backend
+- Python
+- Flask
+- Open-Meteo API
+- Open-Meteo Air Quality API
+
+### Frontend
+- React.js
+- HTML
+- CSS
+- JavaScript
+
+### Tools
+- Git
+- GitHub
+- VS Code
+
+---
+
+## Project Structure
+
+```text
+weather-forecast-app/
+├── weather-app/            # Flask Backend
+├── auroracast-ui-main/     # React Frontend
+├── README.md
+├── QUICK_START.md
+├── INTEGRATION_SETUP.md
+└── VERIFICATION.md
+```
+
+---
+
+## Features Overview
+
+### Weather Forecast
+Get real-time weather information for any city.
+
+### Air Quality Monitoring
+Displays Air Quality Index (AQI) information to help users understand environmental conditions.
+
+### AI Weather Summary
+Provides intelligent weather insights based on temperature, weather conditions, and AQI.
+
+### Travel Comfort Score
+Calculates a score indicating how suitable current weather conditions are for travel and outdoor activities.
+
+### Outfit Recommendations
+Suggests suitable clothing based on weather conditions.
+
+### Activity Suggestions
+Provides weather-based recommendations for outdoor and indoor activities.
+
+### Health Advisory
+Displays useful health alerts and recommendations based on weather and air quality conditions.
+
+---
+
+## Installation
+
+### Clone Repository
 
 ```bash
-# 1. Clone / navigate to project folder
+git clone https://github.com/ghimani587-sudo/weather-forecast-app.git
+```
+
+### Backend Setup
+
+```bash
 cd weather-app
-
-# 2. Create a virtual environment
-python -m venv venv
-source venv/bin/activate          # Windows: venv\Scripts\activate
-
-# 3. Install dependencies
 pip install -r requirements.txt
-
-# 4. Set your OpenWeatherMap API key
-#    Get a free key at: https://openweathermap.org/api
-export API_KEY="ad8a16fbb27c9f704ac87662ce65ce7b"   # Windows: set API_KEY=your_api_key_here
-
-# 5. Run the app
 python app.py
-# → Open http://localhost:10000
+```
+
+Backend runs on:
+
+```text
+http://127.0.0.1:10000
+```
+
+### Frontend Setup
+
+```bash
+cd auroracast-ui-main
+npm install
+npm run dev
+```
+
+Frontend runs on:
+
+```text
+http://localhost:8081
 ```
 
 ---
 
-## API Endpoints
+## Learning Outcomes
 
-| Method | Route | Description |
-|--------|-------|-------------|
-| GET    | `/`   | Weather search UI |
-| POST   | `/`   | Submit city name, get weather page |
-| GET    | `/api/weather?city=London` | JSON API response |
+Through this project, I gained hands-on experience in:
 
-### JSON API Example
-```
-GET /api/weather?city=Tokyo
-
-{
-  "success": true,
-  "data": {
-    "city": "Tokyo",
-    "country": "JP",
-    "temperature": 22.4,
-    "feels_like": 21.8,
-    "condition": "Clear Sky",
-    "condition_main": "Clear",
-    "icon": "☀️",
-    "humidity": 58,
-    "wind_speed": 12.6,
-    "visibility": 10.0
-  }
-}
-```
+- Python Development
+- Flask Framework
+- API Integration
+- Data Processing
+- Real-Time Weather Data Handling
+- Frontend-Backend Communication
+- Debugging and Problem Solving
+- Git & GitHub Workflow
+- Building Data-Driven Applications
 
 ---
 
-## Deploy to Render (Free)
+## Future Improvements
 
-1. Push this project to a GitHub repo.
-2. Create a new **Web Service** on [Render](https://render.com).
-3. Connect your GitHub repo.
-4. Set:
-   - **Build Command:** `pip install -r requirements.txt`
-   - **Start Command:** `gunicorn app:app --bind 0.0.0.0:10000`
-5. Add environment variable: `API_KEY = your_openweathermap_key`
-6. Deploy ✓
-
-## Deploy to Railway
-
-1. Install Railway CLI: `npm i -g @railway/cli`
-2. `railway login && railway init`
-3. `railway variables set API_KEY=your_key`
-4. `railway up`
-
-## Deploy to PythonAnywhere
-
-1. Upload files via the PythonAnywhere dashboard.
-2. Create a new Web App → Manual configuration → Python 3.
-3. Set the WSGI file to point to `app:app`.
-4. Add `API_KEY` in the environment variables panel.
+- Live Deployment
+- Location-Based Weather Detection
+- Weather Maps
+- Dark Mode Support
+- Weather Alerts & Notifications
+- Historical Weather Analytics
 
 ---
 
-## Environment Variables
+## GitHub Repository
 
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `API_KEY` | ✅ Yes | OpenWeatherMap API key |
-| `PORT` | No (default: 10000) | Port to listen on |
-| `FLASK_DEBUG` | No (default: false) | Enable debug mode |
+Repository Link:
+
+https://github.com/ghimani587-sudo/weather-forecast-app
+
+---
+
+## Author
+
+**Himani Gautam**  
+BCA (Data Science)
+
+Internship Project – **Pinnacle Labs**
+
+---
